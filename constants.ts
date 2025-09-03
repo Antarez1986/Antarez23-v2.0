@@ -1,4 +1,3 @@
-
 import { Difficulty } from './types';
 
 export const SCHOOL_GRADES: string[] = [
@@ -12,12 +11,15 @@ export const TEXT_TYPES: string[] = [
 export const DIFFICULTIES: Difficulty[] = [Difficulty.Bajo, Difficulty.Medio, Difficulty.Alto];
 
 export const PREFERENCES: string[] = [
-  "Tecnología", "Animales", "Música", "Viajes", "Misterios", "Deportes", "Arte", "Ciencia", "Fantasía"
+  "Tecnología", "Animales", "Música", "Viajes", "Misterios", "Deportes", "Arte", "Ciencia", "Fantasía", "Historia", "Naturaleza", "Aventuras"
 ];
 
 export const EXTRA_ACTIVITIES: string[] = [
-    "Sopa de Letras",
-    "Crucigrama",
+    "Unir Columnas",
+    "Preguntas Abiertas",
+    "Actividad Creativa",
+    "Mapa Conceptual o Línea de Tiempo",
     "Completar la Frase",
     "Verdadero o Falso",
+    "Ordena la Frase",
 ];

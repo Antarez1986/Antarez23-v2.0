@@ -1,4 +1,3 @@
-
 export enum Difficulty {
   Bajo = "Bajo",
   Medio = "Medio",
@@ -9,13 +8,18 @@ export interface FormData {
   studentName: string;
   grade: string;
   topic: string;
+  desempenos: string;
   textType: string;
   difficulty: Difficulty;
   additionalDetails: string;
   preferences: string[];
   characterCount: number;
   saberQuestionCount: number;
+  openQuestionCount: number;
   extraActivities: string[];
+  sopaDeLetrasWordCount: number;
+  sopaDeLetrasRows: number;
+  sopaDeLetrasCols: number;
 }
 
 export interface SaberQuestion {
@@ -28,6 +32,10 @@ export interface SaberQuestion {
 export interface MatchingExercise {
   columnA: string[];
   columnB: string[];
+  answers: {
+    itemA: string;
+    itemB: string;
+  }[];
 }
 
 export interface CreativeActivity {
@@ -35,17 +43,44 @@ export interface CreativeActivity {
   description: string;
 }
 
+export type SopaDeLetrasContent = {
+  grid: string[][];
+  words: string[];
+};
+
+export type VerdaderoFalsoItem = {
+  statement: string;
+  answer: boolean;
+};
+
+export type CompletarFraseItem = {
+  phrase: string;
+  options: string[];
+  answer: string;
+};
+
+export type OrdenaFraseItem = {
+  scrambledWords: string[];
+  correctSentence: string;
+};
+
 export interface ExtraActivity {
-    title: string;
-    content: string;
+  title: string;
+  description: string;
+  content?: string; // For simple markdown-based activities
+  sopaDeLetras?: SopaDeLetrasContent;
+  verdaderoFalso?: VerdaderoFalsoItem[];
+  completarFrase?: CompletarFraseItem[];
+  ordenaFrase?: OrdenaFraseItem[];
 }
+
 
 export interface Workshop {
   saberQuestions: SaberQuestion[];
-  matchingExercise: MatchingExercise;
-  openQuestions: string[];
-  creativeActivity: CreativeActivity;
-  conceptMapFacts: string[];
+  matchingExercise?: MatchingExercise;
+  openQuestions?: string[];
+  creativeActivity?: CreativeActivity;
+  conceptMapFacts?: string[];
   extraActivities: ExtraActivity[];
 }
 
