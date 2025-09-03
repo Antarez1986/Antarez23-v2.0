@@ -43,9 +43,18 @@ export interface CreativeActivity {
   description: string;
 }
 
+export type WordSolution = {
+  word: string;
+  startRow: number;
+  startCol: number;
+  endRow: number;
+  endCol: number;
+};
+
 export type SopaDeLetrasContent = {
   grid: string[][];
   words: string[];
+  solution: WordSolution[];
 };
 
 export type VerdaderoFalsoItem = {

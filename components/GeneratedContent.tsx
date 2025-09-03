@@ -412,18 +412,58 @@ const GeneratedContentDisplay: React.FC<GeneratedContentProps> = ({ content, stu
                         y += 3;
 
                         if (activity.sopaDeLetras) {
-                            const { grid, words } = activity.sopaDeLetras;
-                             if(grid.length > 0 && grid[0].length > 0) {
+                            const { grid, words, solution } = activity.sopaDeLetras;
+                            if (grid && grid.length > 0 && grid[0].length > 0) {
                                 const numCols = grid[0].length;
-                                const cellSize = USABLE_WIDTH / numCols;
-                                const tableHeight = grid.length * cellSize; checkPageBreak(tableHeight + 20);
+                                const cellSize = Math.min(USABLE_WIDTH / numCols, 8); // Prevent cells from being too large
+                                const tableHeight = grid.length * cellSize;
+                                checkPageBreak(tableHeight + 20);
                                 const startX = MARGIN, startY = y;
-                                doc.setFontSize(8); doc.setFont(FONT_FAMILY, 'normal'); doc.setTextColor(COLOR_TEXT);
-                                grid.forEach((row, rIdx) => row.forEach((cell, cIdx) => {
-                                    const cellX = startX + cIdx * cellSize, cellY = startY + rIdx * cellSize;
-                                    doc.setDrawColor(COLOR_BORDER); doc.rect(cellX, cellY, cellSize, cellSize);
-                                    doc.text(cell, cellX + cellSize/2, cellY + cellSize/2, { align: 'center', baseline: 'middle' });
-                                }));
+
+                                // --- Teacher's PDF Solution Highlighting ---
+                                if (isForTeacher && solution) {
+                                    const highlightColors = [
+                                        [255, 228, 196], [173, 216, 230], [144, 238, 144], [255, 255, 224], 
+                                        [221, 160, 221], [240, 230, 140], [250, 128, 114], [152, 251, 152], 
+                                        [255, 182, 193], [175, 238, 238]
+                                    ];
+                                    solution.forEach((sol, colorIndex) => {
+                                        const color = highlightColors[colorIndex % highlightColors.length];
+                                        doc.setFillColor(color[0], color[1], color[2]);
+                                        
+                                        const dRow = Math.sign(sol.endRow - sol.startRow);
+                                        const dCol = Math.sign(sol.endCol - sol.startCol);
+                                        const wordLength = Math.max(Math.abs(sol.endRow - sol.startRow), Math.abs(sol.endCol - sol.startCol)) + 1;
+                                        
+                                        let currRow = sol.startRow;
+                                        let currCol = sol.startCol;
+
+                                        for (let i = 0; i < wordLength; i++) {
+                                            if (currRow >= 0 && currRow < grid.length && currCol >= 0 && currCol < numCols) {
+                                                const cellX = startX + currCol * cellSize;
+                                                const cellY = startY + currRow * cellSize;
+                                                doc.rect(cellX, cellY, cellSize, cellSize, 'F');
+                                            }
+                                            currRow += dRow;
+                                            currCol += dCol;
+                                        }
+                                    });
+                                }
+
+                                // --- Draw Grid and Letters (for both student and teacher) ---
+                                doc.setFontSize(cellSize * 0.7); // Adjust font size based on cell size
+                                doc.setFont(FONT_FAMILY, 'normal');
+                                doc.setTextColor(COLOR_TEXT);
+                                grid.forEach((row, rIdx) => {
+                                    row.forEach((cell, cIdx) => {
+                                        const cellX = startX + cIdx * cellSize;
+                                        const cellY = startY + rIdx * cellSize;
+                                        doc.setDrawColor(COLOR_BORDER);
+                                        doc.rect(cellX, cellY, cellSize, cellSize); // Cell border
+                                        doc.text(cell, cellX + cellSize / 2, cellY + cellSize / 2, { align: 'center', baseline: 'middle' });
+                                    });
+                                });
+
                                 y += tableHeight + 5;
                                 addText("Palabras a encontrar:", { size: 12, font: 'bold' });
                                 addText(words.join(', '), { size: 11 });

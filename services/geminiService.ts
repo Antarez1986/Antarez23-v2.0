@@ -81,7 +81,21 @@ const responseSchema = {
                                 type: Type.OBJECT,
                                 properties: {
                                     grid: { type: Type.ARRAY, items: { type: Type.ARRAY, items: { type: Type.STRING, description: "Una letra mayúscula." } }, description: "Una cuadrícula del tamaño especificado." },
-                                    words: { type: Type.ARRAY, items: { type: Type.STRING } },
+                                    words: { type: Type.ARRAY, items: { type: Type.STRING }, description: "La lista de palabras a buscar." },
+                                    solution: {
+                                        type: Type.ARRAY,
+                                        items: {
+                                            type: Type.OBJECT,
+                                            properties: {
+                                                word: { type: Type.STRING },
+                                                startRow: { type: Type.INTEGER, description: "Fila inicial (basado en 0)." },
+                                                startCol: { type: Type.INTEGER, description: "Columna inicial (basado en 0)." },
+                                                endRow: { type: Type.INTEGER, description: "Fila final (basado en 0)." },
+                                                endCol: { type: Type.INTEGER, description: "Columna final (basado en 0)." },
+                                            }
+                                        },
+                                        description: "La solución, con coordenadas de inicio y fin para cada palabra."
+                                    }
                                 },
                                 description: "Contenido estructurado para Sopa de Letras. USA ESTE CAMPO SÓLO PARA ESA ACTIVIDAD."
                             },
@@ -155,7 +169,7 @@ Instrucciones para las actividades opcionales solicitadas. Para cada actividad, 
         }
         if (data.extraActivities.includes('Sopa de Letras')) {
             instructions += `
-- **Sopa de Letras**: Rellena el campo 'sopaDeLetras'. La 'grid' debe ser de ${data.sopaDeLetrasRows}x${data.sopaDeLetrasCols}. 'words' debe tener ${data.sopaDeLetrasWordCount} palabras clave. Las palabras deben estar muy bien escondidas (horizontal, vertical, diagonal, y al revés) y no ser obvias. ASEGÚRATE de que los otros campos de contenido estructurado estén ausentes o nulos en este objeto.`;
+- **Sopa de Letras**: Rellena el campo 'sopaDeLetras'. La 'grid' debe ser de ${data.sopaDeLetrasRows}x${data.sopaDeLetrasCols}. 'words' debe tener ${data.sopaDeLetrasWordCount} palabras clave. Es CRUCIAL que las palabras estén muy bien escondidas. Utiliza todas las direcciones: horizontal (de izquierda a derecha y viceversa), vertical (de arriba a abajo y viceversa) y diagonal (en las 4 direcciones). La distribución de las palabras en la cuadrícula debe ser completamente aleatoria y suponer un verdadero reto. NO coloques las palabras de forma ordenada, consecutiva o en patrones obvios (por ejemplo, todas comenzando en la primera fila o columna). Las letras de relleno deben ser aleatorias para maximizar la dificultad. En el campo 'solution', proporciona un array con objetos para CADA palabra, especificando la palabra y sus coordenadas de inicio y fin (startRow, startCol, endRow, endCol), todas basadas en 0. ASEGÚRATE de que los otros campos de contenido estructurado estén ausentes o nulos en este objeto.`;
         }
         if (data.extraActivities.includes('Completar la Frase')) {
             instructions += `
